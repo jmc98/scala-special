@@ -70,7 +70,6 @@ class KMeansSuite extends FunSuite {
     val expected = GenMap[Point,GenSeq[Point]]()
     checkParClassify(points, means, expected)
   }
-
 }
 
 

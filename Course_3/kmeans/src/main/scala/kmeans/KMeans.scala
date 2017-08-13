@@ -27,7 +27,7 @@ class KMeans {
   }
 
   def findClosest(p: Point, means: GenSeq[Point]): Point = {
-    assert(means.size > 0)
+    assert(means.nonEmpty)
     var minDistance = p.squareDistance(means(0))
     var closest = means(0)
     var i = 1
@@ -43,10 +43,11 @@ class KMeans {
   }
 
   def classify(points: GenSeq[Point], means: GenSeq[Point]): GenMap[Point, GenSeq[Point]] = {
-    ???
+    val pointsByMean = points.groupBy(findClosest(_, means))
+    means.map(_ -> Nil).toMap ++ pointsByMean
   }
 
-  def findAverage(oldMean: Point, points: GenSeq[Point]): Point = if (points.length == 0) oldMean else {
+  def findAverage(oldMean: Point, points: GenSeq[Point]): Point = if (points.isEmpty) oldMean else {
     var x = 0.0
     var y = 0.0
     var z = 0.0
@@ -59,16 +60,19 @@ class KMeans {
   }
 
   def update(classified: GenMap[Point, GenSeq[Point]], oldMeans: GenSeq[Point]): GenSeq[Point] = {
-    ???
+    oldMeans.map(mean => findAverage(mean, classified(mean)))
   }
 
   def converged(eta: Double)(oldMeans: GenSeq[Point], newMeans: GenSeq[Point]): Boolean = {
-    ???
+    oldMeans.zip(newMeans).forall {
+      case (m1, m2) => m1.squareDistance(m2) <= eta
+    }
   }
 
   @tailrec
   final def kMeans(points: GenSeq[Point], means: GenSeq[Point], eta: Double): GenSeq[Point] = {
-    if (???) kMeans(???, ???, ???) else ??? // your implementation need to be tail recursive
+    val newMeans = update(classify(points, means), means)
+    if (!converged(eta)(means, newMeans)) kMeans(points, newMeans, eta) else newMeans // your implementation need to be tail recursive
   }
 }
 
