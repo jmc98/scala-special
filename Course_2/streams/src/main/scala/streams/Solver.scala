@@ -87,7 +87,7 @@ trait Solver extends GameDef {
    * The stream of all paths that begin at the starting block.
    */
   lazy val pathsFromStart: Stream[(Block, List[Move])] =
-    from(initial = Stream((startBlock, Nil)), explored = Set())
+    from(initial = Stream((startBlock, Nil)), explored = Set(startBlock))
 
   /**
    * Returns a stream of all possible pairs of the goal block along
